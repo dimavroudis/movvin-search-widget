@@ -23,27 +23,32 @@ class movvin_search_widget extends WP_Widget {
 	function form($instance) {	
             if( $instance) {
                 $title = esc_attr($instance['title']);
-                $starting_point = esc_attr($instance['starting_point']);
-                $destination = esc_attr($instance['destination']);
+                $startingPointText = esc_attr($instance['startingPointText']);
+                $startingPointLatLng = esc_attr($instance['startingPointLatLng']);
             } else {
-                $title = '';
-                $starting_point = 'Starting Point (e.g. Thessaloniki)';
-                $destination = 'Optional';
+                $title = 'Search rides on Movvin';
+                $startingPointText = '';
+                $startingPointLatLng = '';
             } ?>
 
             <p>
                 <label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Widget Title', 'movvin_search_widget'); ?></label>
-                <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" />
+                <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" placeholder="Optional" type="text" value="<?php echo $title; ?>" />
             </p>
+            <p>
+                <label for="<?php echo $this->get_field_id('startingPointText'); ?>"><?php _e('Starting point', 'movvin_search_widget'); ?></label>
+                <input class="widefat movvin-autocomplete-input" id="<?php echo $this->get_field_id('startingPointText'); ?>" name="<?php echo $this->get_field_name('startingPointText'); ?>" type="text" value="<?php echo $startingPointText;?>" placeholder="Optional" />
+                <input id="<?php echo $this->get_field_id('startingPointLatLng'); ?>" name="<?php echo $this->get_field_name('startingPointLatLng'); ?>" type="hidden" value="<?php echo $startingPointLatLng;?>" />
+            </p>
+            <script>
+                jQuery( document ).ready(function() {
+                    var inputs = document.getElementsByClassName('movvin-autocomplete-input');
 
-            <p>
-                <label for="<?php echo $this->get_field_id('starting_point'); ?>"><?php _e('Starting point field placeholder:', 'movvin_search_widget'); ?></label>
-                <input  class="widefat" id="<?php echo $this->get_field_id('starting_point'); ?>" name="<?php echo $this->get_field_name('starting_point'); ?>" type="text" value="<?php echo $starting_point;?>" />
-            </p>
-            <p>
-                <label for="<?php echo $this->get_field_id('destination'); ?>"><?php _e('Destination field placeholder:', 'movvin_search_widget'); ?></label>
-                <input  class="widefat" id="<?php echo $this->get_field_id('destination'); ?>" name="<?php echo $this->get_field_name('destination'); ?>" type="text" value="<?php echo $destination;?>" />
-            </p>
+                    for (var i = 0; i < inputs.length; i++) {
+                        initAutocomplete(inputs[i]);
+                    }
+                });
+            </script>
         <?php
 	}
 
@@ -52,8 +57,8 @@ class movvin_search_widget extends WP_Widget {
 		$instance = $old_instance;
         // Fields
         $instance['title'] = strip_tags($new_instance['title']);
-        $instance['starting_point'] = strip_tags($new_instance['starting_point']);
-        $instance['destination'] = strip_tags($new_instance['destination']);
+        $instance['startingPointText'] = strip_tags($new_instance['startingPointText']);
+        $instance['startingPointLatLng'] = strip_tags($new_instance['startingPointLatLng']);
         return $instance;
 	}
 
@@ -62,32 +67,36 @@ class movvin_search_widget extends WP_Widget {
         extract( $args );
         // these are the widget options
         $title = apply_filters('widget_title', $instance['title']);
-        $text = $instance['text'];
-        $starting_point = $instance['starting_point'];
-        $destination = $instance['destination'];
-        echo $before_widget; ?>
-        
+        $startingPointText = $instance['startingPointText'];
+        $startingPointLatLng = $instance['startingPointLatLng'];
+        echo $before_widget; 
+        if ( ! empty( $title ) )
+            echo $args['before_title'] . $title . $args['after_title'];
+        ?>
         <form method="get" action="https://dev.movvin.com/s" enctype="application/x-www-form-urlencoded"> 
             <div class="movvin-search-bar-container"> 
-                <input id="p_p_id" name="p_p_id" type="hidden" autocomplete="off" aria-disabled="false" aria-readonly="false" value="ridesearch_WAR_MOVVINLiferayportlet"/>
-                <input id="p_p_lifecycle" name="p_p_lifecycle" type="hidden" autocomplete="off"  aria-disabled="false" aria-readonly="false" value="0"/>
-                <div class="movvin-search-b2c-block address">
-                   <label for="_ridesearchbar_WAR_MOVVINLiferayportlet_:search-bar-form:from-place-input">From:</label> 
-                    <input id="_ridesearch_WAR_MOVVINLiferayportlet_fromText" name="_ridesearch_WAR_MOVVINLiferayportlet_fromText" type="text" autocomplete="off" placeholder="Starting point (e.g &quot;Thessaloniki&quot;)" class="movvin-autocomplete-input" role="textbox" aria-disabled="false" aria-readonly="false" value="Thessaloniki. Greece"/>
-                    <input id="_ridesearch_WAR_MOVVINLiferayportlet_from" class="movvin-autocomplete-input-hidden" value="40.6400629-22.944419100000005" name="_ridesearch_WAR_MOVVINLiferayportlet_from" type="hidden" autocomplete="off"  role="textbox" aria-disabled="false" aria-readonly="false"/>
+                <input id="p_p_id" name="p_p_id" type="hidden"  value="ridesearch_WAR_MOVVINLiferayportlet"/>
+                <input id="p_p_lifecycle" name="p_p_lifecycle" value="0" type="hidden"/>
+                <div class="search-b2c-block address starting-point">
+                    <label for="movvinStartingPoint">From:</label> 
+                    <input id="movvinStartingPoint" name="movvinStartingPoint" value="<?php echo $startingPointText; ?>"  type="text" class="movvin-autocomplete-input" required/>
+                    <input class="movvin-autocomplete-input-hidden" value="<?php echo $startingPointLatLng; ?>" name="_ridesearch_WAR_MOVVINLiferayportlet_from" type="hidden"  />
+                    <input class="movvin-autocomplete-input-hidden" value="<?php echo $startingPointText; ?>" name="_ridesearch_WAR_MOVVINLiferayportlet_fromText" type="hidden"/>
                 </div> 
-                <div class="search-b2c-block address">
-                    <label for="_ridesearchbar_WAR_MOVVINLiferayportlet_:search-bar-form:to-place-input">To:</label>
-                    <input id="_ridesearch_WAR_MOVVINLiferayportlet_toText" name="_ridesearch_WAR_MOVVINLiferayportlet_toText" type="text" autocomplete="off" placeholder="Optional" class="movvin-autocomplete-input" role="textbox" aria-disabled="false" aria-readonly="false"/>
-                    <input id="_ridesearch_WAR_MOVVINLiferayportlet_to" class="movvin-autocomplete-input-hidden" name="_ridesearch_WAR_MOVVINLiferayportlet_to" type="hidden" autocomplete="off"  role="textbox" aria-disabled="false" aria-readonly="false"/>
+                <div class="search-b2c-block address destination">
+                    <label for="movvinDestination">To:</label>
+                    <input id="movvinDestination" name="movvinDestination" type="text" class="movvin-autocomplete-input" />
+                    <input class="movvin-autocomplete-input-hidden" name="_ridesearch_WAR_MOVVINLiferayportlet_to" type="hidden"/>
+                    <input class="movvin-autocomplete-input-hidden" name="_ridesearch_WAR_MOVVINLiferayportlet_toText" type="hidden"/>
                 </div> 
                 <div class="search-b2c-block date">
-                    <label for="_ridesearch_WAR_MOVVINLiferayportlet_date">Date:</label>
-                    <input id="_ridesearch_WAR_MOVVINLiferayportlet_date" name="_ridesearch_WAR_MOVVINLiferayportlet_date" type="datetime" aria-required="true" value="2017-09-24_21:23:58" autocomplete="off" role="textbox" aria-disabled="false" aria-readonly="false"/>
+                    <label for="movvinDatePicker">Date:</label>
+                    <input id="movvinDatePicker" type="text" value="<?php echo date("d/m/y"); ?>"/>
+                    <input id="movvinDate" class="movvin-autocomplete-input-hidden" value="" name="_ridesearch_WAR_MOVVINLiferayportlet_date" type="hidden" required/>
                 </div>
                 <div class="search-b2c-block passengers">
-                    <label for="_ridesearch_WAR_MOVVINLiferayportlet_passengers">Passengers:</label> 
-                    <select id="_ridesearch_WAR_MOVVINLiferayportlet_passengers" name="_ridesearch_WAR_MOVVINLiferayportlet_passengers" size="1"> 
+                    <label for="movvinPassengers">Passengers:</label> 
+                    <select id="movvinPassengers" required name="_ridesearch_WAR_MOVVINLiferayportlet_passengers" size="1"> 
                         <option value="1" selected="selected">1</option> 
                         <option value="2">2</option> 
                         <option value="3">3</option> 
@@ -100,12 +109,13 @@ class movvin_search_widget extends WP_Widget {
                         <option value="10">10</option> 
                     </select>
                 </div> 
-                <input id="_ridesearch_WAR_MOVVINLiferayportlet_radius" name="_ridesearch_WAR_MOVVINLiferayportlet_radius" type="hidden" autocomplete="off"  role="textbox" aria-disabled="false" aria-readonly="false" value="18000"/>
-                <button type="submit" role="button" aria-disabled="false">
-                    <span>Search</span>
-                </button> 
-            </div>
-        </form>
+            <input id="_ridesearch_WAR_MOVVINLiferayportlet_radius" name="_ridesearch_WAR_MOVVINLiferayportlet_radius" type="hidden" value="18000"/>
+            <button id="movvinSubmit" class="movvin-button" type="submit" role="button" aria-disabled="false">
+                <span>Search</span>
+            </button> 
+            <div class="movvin-pwrby"><span>Powered by </span><img src="https://cdn.movvin.com/TestTheme/images/movvin-logo-original.svg" alt="Movvin" height="20" width="106"/></div>
+        </div>
+    </form>
     <?php
         echo $after_widget;
 	}
@@ -120,8 +130,11 @@ if (! function_exists('enqueue_movvin_search_widget_css')) {
 
 if (! function_exists('enqueue_movvin_search_widget_js')) {
     function enqueue_movvin_search_widget_js() {
-        wp_enqueue_script('google-maps-api-js','https://maps.googleapis.com/maps/api/js?key=AIzaSyBi9TrT6Y45x72lDYLcMQFms2tizReTWO0&libraries=places', array('jquery'), '', true);
-        wp_enqueue_script('movvin-search-widget-js', plugins_url('movvin-search-widget.js', __FILE__), array('jquery'), '', true);
+        wp_enqueue_script('google-maps-api-js','https://maps.googleapis.com/maps/api/js?key=AIzaSyBi9TrT6Y45x72lDYLcMQFms2tizReTWO0&libraries=places', true);
+        wp_enqueue_script('movvin-search-widget-js', plugins_url('movvin-search-widget.js', __FILE__), array('jquery', 'jquery-ui-core', 'jquery-ui-datepicker','google-maps-api-js'),false,  true);
+        wp_enqueue_script('jquery');
+        wp_enqueue_script('jquery-ui-core');
+        wp_enqueue_script('jquery-ui-datepicker');
     }
     add_action( 'wp_enqueue_scripts', 'enqueue_movvin_search_widget_js' );
 }
@@ -132,4 +145,9 @@ function register_movvin_search_widget() {
 }
 add_action( 'widgets_init', 'register_movvin_search_widget' );
 
+function load_custom_wp_admin_style($hook) {
+    wp_enqueue_script('google-maps-api-js','https://maps.googleapis.com/maps/api/js?key=AIzaSyBi9TrT6Y45x72lDYLcMQFms2tizReTWO0&libraries=places', false);
+    wp_enqueue_script('movvin-search-widget-admin-js', plugins_url('movvin-search-widget-admin.js', __FILE__), array('google-maps-api-js'), false, false);
+}
+add_action( 'admin_enqueue_scripts', 'load_custom_wp_admin_style' );
 ?>
