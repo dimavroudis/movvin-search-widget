@@ -73,7 +73,7 @@ class movvin_search_widget extends WP_Widget {
         if ( ! empty( $title ) )
             echo $args['before_title'] . $title . $args['after_title'];
         ?>
-        <form method="get" action="https://dev.movvin.com/s" enctype="application/x-www-form-urlencoded"> 
+        <form method="get" action="https://movvin.com/s" enctype="application/x-www-form-urlencoded"> 
             <div class="movvin-search-bar-container"> 
                 <input id="p_p_id" name="p_p_id" type="hidden"  value="ridesearch_WAR_MOVVINLiferayportlet"/>
                 <input id="p_p_lifecycle" name="p_p_lifecycle" value="0" type="hidden"/>
