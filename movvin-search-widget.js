@@ -1,21 +1,23 @@
-var inputs = document.getElementsByClassName('movvin-autocomplete-input');
-var datePicker = document.getElementById('movvinDatePicker');
-var movvinDate = document.getElementById('movvinDate');
-var button = document.getElementById('movvinSubmit');
-
-for (var i = 0; i < inputs.length; i++) {
-    initAutocomplete(inputs[i]);
-}
-
-button.addEventListener("click", function() {
-    createMovvinDate();
-});
-
 jQuery(document).ready(function() {
-    jQuery(datePicker).datepicker({
-        dateFormat: 'dd/mm/yy',
-        minDate: 0
-    });
+    if ($('#movvinSearch').length > 0) {
+        var inputs = document.getElementsByClassName('movvin-autocomplete-input');
+        var datePicker = document.getElementById('movvinDatePicker');
+        var movvinDate = document.getElementById('movvinDate');
+        var button = document.getElementById('movvinSubmit');
+
+        for (var i = 0; i < inputs.length; i++) {
+            initAutocomplete(inputs[i]);
+        }
+
+        button.addEventListener("click", function() {
+            createMovvinDate();
+        });
+
+        jQuery(datePicker).datepicker({
+            dateFormat: 'dd/mm/yy',
+            minDate: 0
+        });
+    }
 });
 
 function initAutocomplete(input) {
