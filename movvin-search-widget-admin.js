@@ -9,4 +9,10 @@ function initAutocomplete(input) {
         var latlngvalue = place.geometry.location.lat() + "-" + place.geometry.location.lng();
         hiddenInput.value = latlngvalue;
     })
+
+    input.addEventListener('change', function() {
+        if (input.value == "") {
+            hiddenInput.value = "";
+        }
+    })
 }

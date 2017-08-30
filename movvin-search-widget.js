@@ -1,5 +1,5 @@
 jQuery(document).ready(function() {
-    if ($('#movvinSearch').length > 0) {
+    if (jQuery('#movvinSearch').length > 0) {
         var inputs = document.getElementsByClassName('movvin-autocomplete-input');
         var datePicker = document.getElementById('movvinDatePicker');
         var movvinDate = document.getElementById('movvinDate');
@@ -33,6 +33,13 @@ function initAutocomplete(input) {
         var textvalue = place.formatted_address;
         hiddenInputText.value = textvalue;
         hiddenInputLatlng.value = latlngvalue;
+    })
+
+    input.addEventListener('change', function() {
+        if (input.value == "") {
+            hiddenInputLatlng.value = "";
+            hiddenInputText.value = "";
+        }
     })
 }
 
