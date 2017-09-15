@@ -2,7 +2,7 @@
 
 ![Movvin.com](https://scontent-mxp1-1.xx.fbcdn.net/v/t1.0-9/17799223_1666871063609466_1053107251974223274_n.png?oh=59a6295d0ad8171d10a324e126a37c8c&oe=5A52507A "Movvin")
 
-This is a WordPress plugin that creates a widget enabling your site visitors to search rides on Movvin.com.
+This is a WordPress plugin that creates a widget enabling your site's visitors to search rides on Movvin.com.
 
 If you are an owner or administrator of a point of interest *like hotel, cafeteria, bar etc*, you have the option to add your business' address as **the default starting point**. 
 
